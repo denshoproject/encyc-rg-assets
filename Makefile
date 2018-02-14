@@ -16,14 +16,14 @@ MEDIA_BASE=/var/www/encycrg
 MEDIA_ROOT=$(MEDIA_BASE)/media
 STATIC_ROOT=$(MEDIA_BASE)/static
 
-FPM_BRANCH := $(shell git rev-parse --abbrev-ref HEAD | tr -d _ | tr -d -)
-FPM_ARCH=amd64
-FPM_NAME=$(APP)-$(FPM_BRANCH)
-FPM_FILE=$(FPM_NAME)_$(VERSION)_$(FPM_ARCH).deb
-FPM_VENDOR=Densho.org
-FPM_MAINTAINER=<geoffrey.jost@densho.org>
-FPM_DESCRIPTION=Densho Encyclopedia Resource Guide assets
-FPM_BASE=opt/encyc-rg-assets
+DEB_BRANCH := $(shell git rev-parse --abbrev-ref HEAD | tr -d _ | tr -d -)
+DEB_ARCH=amd64
+DEB_NAME=$(APP)-$(DEB_BRANCH)
+DEB_FILE=$(DEB_NAME)_$(VERSION)_$(DEB_ARCH).deb
+DEB_VENDOR=Densho.org
+DEB_MAINTAINER=<geoffrey.jost@densho.org>
+DEB_DESCRIPTION=Densho Encyclopedia Resource Guide assets
+DEB_BASE=opt/encyc-rg-assets
 
 
 .PHONY: help
@@ -68,26 +68,26 @@ clean-static:
 deb:
 	@echo ""
 	@echo "DEB packaging ----------------------------------------------------------"
-	-rm -Rf $(FPM_FILE)
+	-rm -Rf $(DEB_FILE)
 	fpm   \
 	--verbose   \
 	--input-type dir   \
 	--output-type deb   \
-	--name $(FPM_NAME)   \
+	--name $(DEB_NAME)   \
 	--version $(VERSION)   \
-	--package $(FPM_FILE)   \
+	--package $(DEB_FILE)   \
 	--url "$(GIT_SOURCE_URL)"   \
-	--vendor "$(FPM_VENDOR)"   \
-	--maintainer "$(FPM_MAINTAINER)"   \
-	--description "$(FPM_DESCRIPTION)"   \
+	--vendor "$(DEB_VENDOR)"   \
+	--maintainer "$(DEB_MAINTAINER)"   \
+	--description "$(DEB_DESCRIPTION)"   \
 	--chdir $(INSTALLDIR)   \
 	media=var/www/encycrg   \
 	static=var/www/encycrg   \
-	.git=$(FPM_BASE)   \
-	.gitignore=$(FPM_BASE)   \
-	media=$(FPM_BASE)   \
-	static=$(FPM_BASE)   \
-	INSTALL=$(FPM_BASE)   \
-	Makefile=$(FPM_BASE)   \
-	README=$(FPM_BASE)   \
-	VERSION=$(FPM_BASE)
+	.git=$(DEB_BASE)   \
+	.gitignore=$(DEB_BASE)   \
+	media=$(DEB_BASE)   \
+	static=$(DEB_BASE)   \
+	INSTALL=$(DEB_BASE)   \
+	Makefile=$(DEB_BASE)   \
+	README=$(DEB_BASE)   \
+	VERSION=$(DEB_BASE)
