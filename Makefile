@@ -18,18 +18,16 @@ INSTALLDIR=$(INSTALL_BASE)/encyc-rg-assets
 
 MEDIA_BASE=/var/www/encycrg
 MEDIA_ROOT=$(MEDIA_BASE)/media
+ASSETS_ROOT=$(MEDIA_BASE)/assets
 STATIC_ROOT=$(MEDIA_BASE)/static
 
 DEB_BRANCH := $(shell git rev-parse --abbrev-ref HEAD | tr -d _ | tr -d -)
 DEB_ARCH=amd64
-DEB_NAME_JESSIE=$(APP)-$(DEB_BRANCH)
-DEB_NAME_STRETCH=$(APP)-$(DEB_BRANCH)
+DEB_NAME_BUSTER=$(APP)-$(DEB_BRANCH)
 # Application version, separator (~), Debian release tag e.g. deb8
 # Release tag used because sortable and follows Debian project usage.
-DEB_VERSION_JESSIE=$(APP_VERSION)~deb8
-DEB_VERSION_STRETCH=$(APP_VERSION)~deb9
-DEB_FILE_JESSIE=$(DEB_NAME_JESSIE)_$(DEB_VERSION_JESSIE)_$(DEB_ARCH).deb
-DEB_FILE_STRETCH=$(DEB_NAME_STRETCH)_$(DEB_VERSION_STRETCH)_$(DEB_ARCH).deb
+DEB_VERSION_BUSTER=$(APP_VERSION)~deb8
+DEB_FILE_BUSTER=$(DEB_NAME_BUSTER)_$(DEB_VERSION_BUSTER)_$(DEB_ARCH).deb
 DEB_VENDOR=Densho.org
 DEB_MAINTAINER=<geoffrey.jost@densho.org>
 DEB_DESCRIPTION=Densho Encyclopedia Resource Guide assets
@@ -50,85 +48,54 @@ howto-install:
 	@echo "TBD"
 
 
-install: install-static
-
-
-install-static:
+install:
 	@echo ""
-	@echo "installing static files ---------------------------------------------"
+	@echo "install -----------------------------------------------------------------"
 	-mkdir $(MEDIA_BASE)
+	-mkdir $(MEDIA_ROOT)
+	chown -R ddr.root $(MEDIA_ROOT)
+	chmod -R 755 $(MEDIA_ROOT)
 	-mkdir $(STATIC_ROOT)
-	-cp -R $(INSTALLDIR)/static/img/ $(STATIC_ROOT)/
-	-cp -R $(INSTALLDIR)/static/js/ $(STATIC_ROOT)/
-	-cp -R $(INSTALLDIR)/static/plugins/ $(STATIC_ROOT)/
-	chown -R $(USER).root $(MEDIA_BASE)
-	chmod -R 755 $(MEDIA_BASE)
+	-cp -R $(INSTALLDIR)/assets/* $(ASSETS_ROOT)/
+	-cp -R $(INSTALLDIR)/static/* $(STATIC_ROOT)/
 
-clean: clean-static
+clean:
+	-rm -Rf $(STATIC_ROOT)/
 
-clean-static:
-	-rm -Rf $(STATIC_ROOT)/img/
-	-rm -Rf $(STATIC_ROOT)/js/
-	-rm -Rf $(STATIC_ROOT)/plugins/
 
+# http://fpm.readthedocs.io/en/latest/
+install-fpm:
+	@echo "install-fpm ------------------------------------------------------------"
+	apt-get install ruby ruby-dev rubygems build-essential
+	gem install --no-ri --no-rdoc fpm
 
 # http://fpm.readthedocs.io/en/latest/
 # https://stackoverflow.com/questions/32094205/set-a-custom-install-directory-when-making-a-deb-package-with-fpm
 # https://brejoc.com/tag/fpm/
-deb: deb-jessie deb-stretch
+deb: deb-buster
 
-# deb-jessie and deb-stretch are identical.
-deb-jessie:
+deb-buster:
 	@echo ""
-	@echo "DEB packaging ----------------------------------------------------------"
-	-rm -Rf $(DEB_FILE_JESSIE)
+	@echo "DEB packaging -----------------------------------------------------------"
+	-rm -Rf $(DEB_FILE_BUSTER)
 	fpm   \
 	--verbose   \
 	--input-type dir   \
 	--output-type deb   \
-	--name $(DEB_NAME_JESSIE)   \
-	--version $(DEB_VERSION_JESSIE)   \
-	--package $(DEB_FILE_JESSIE)   \
+	--name $(DEB_NAME_BUSTER)   \
+	--version $(DEB_VERSION_BUSTER)   \
+	--package $(DEB_FILE_BUSTER)   \
 	--url "$(GIT_SOURCE_URL)"   \
 	--vendor "$(DEB_VENDOR)"   \
 	--maintainer "$(DEB_MAINTAINER)"   \
 	--description "$(DEB_DESCRIPTION)"   \
 	--chdir $(INSTALLDIR)   \
-	media=var/www/encycrg   \
 	static=var/www/encycrg   \
 	.git=$(DEB_BASE)   \
 	.gitignore=$(DEB_BASE)   \
-	media=$(DEB_BASE)   \
-	static=$(DEB_BASE)   \
+	assets=$(DEB_BASE)   \
 	INSTALL=$(DEB_BASE)   \
 	Makefile=$(DEB_BASE)   \
 	README=$(DEB_BASE)   \
-	VERSION=$(DEB_BASE)
-
-# deb-jessie and deb-stretch are identical.
-deb-stretch:
-	@echo ""
-	@echo "DEB packaging ----------------------------------------------------------"
-	-rm -Rf $(DEB_FILE_STRETCH)
-	fpm   \
-	--verbose   \
-	--input-type dir   \
-	--output-type deb   \
-	--name $(DEB_NAME_STRETCH)   \
-	--version $(DEB_VERSION_STRETCH)   \
-	--package $(DEB_FILE_STRETCH)   \
-	--url "$(GIT_SOURCE_URL)"   \
-	--vendor "$(DEB_VENDOR)"   \
-	--maintainer "$(DEB_MAINTAINER)"   \
-	--description "$(DEB_DESCRIPTION)"   \
-	--chdir $(INSTALLDIR)   \
-	media=var/www/encycrg   \
-	static=var/www/encycrg   \
-	.git=$(DEB_BASE)   \
-	.gitignore=$(DEB_BASE)   \
-	media=$(DEB_BASE)   \
 	static=$(DEB_BASE)   \
-	INSTALL=$(DEB_BASE)   \
-	Makefile=$(DEB_BASE)   \
-	README=$(DEB_BASE)   \
 	VERSION=$(DEB_BASE)
