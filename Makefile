@@ -55,11 +55,13 @@ install:
 	-mkdir $(MEDIA_ROOT)
 	chown -R ddr.root $(MEDIA_ROOT)
 	chmod -R 755 $(MEDIA_ROOT)
+	-mkdir $(ASSETS_ROOT)
 	-mkdir $(STATIC_ROOT)
 	-cp -R $(INSTALLDIR)/assets/* $(ASSETS_ROOT)/
 	-cp -R $(INSTALLDIR)/static/* $(STATIC_ROOT)/
 
 clean:
+	-rm -Rf $(ASSETS_ROOT)/
 	-rm -Rf $(STATIC_ROOT)/
 
 
@@ -90,10 +92,11 @@ deb-buster:
 	--maintainer "$(DEB_MAINTAINER)"   \
 	--description "$(DEB_DESCRIPTION)"   \
 	--chdir $(INSTALLDIR)   \
+	media=var/www/encycfront   \
 	static=var/www/encycrg   \
 	.git=$(DEB_BASE)   \
 	.gitignore=$(DEB_BASE)   \
-	assets=$(DEB_BASE)   \
+	media=$(DEB_BASE)   \
 	INSTALL=$(DEB_BASE)   \
 	Makefile=$(DEB_BASE)   \
 	README=$(DEB_BASE)   \
