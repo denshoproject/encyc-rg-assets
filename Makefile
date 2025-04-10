@@ -104,6 +104,7 @@ deb-bullseye:
 	static=var/www/encycrg   \
 	.git=$(DEB_BASE)   \
 	.gitignore=$(DEB_BASE)   \
+	bin=$(DEB_BASE)   \
 	media=$(DEB_BASE)   \
 	INSTALL=$(DEB_BASE)   \
 	Makefile=$(DEB_BASE)   \
@@ -132,6 +133,7 @@ deb-bookworm:
 	static=var/www/encycrg   \
 	.git=$(DEB_BASE)   \
 	.gitignore=$(DEB_BASE)   \
+	bin=$(DEB_BASE)   \
 	media=$(DEB_BASE)   \
 	INSTALL=$(DEB_BASE)   \
 	Makefile=$(DEB_BASE)   \
@@ -160,6 +162,7 @@ deb-trixie:
 	static=var/www/encycrg   \
 	.git=$(DEB_BASE)   \
 	.gitignore=$(DEB_BASE)   \
+	bin=$(DEB_BASE)   \
 	media=$(DEB_BASE)   \
 	INSTALL=$(DEB_BASE)   \
 	Makefile=$(DEB_BASE)   \
